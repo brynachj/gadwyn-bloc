@@ -1,4 +1,4 @@
-name: CI
+name: Push branch
 
 on: [push]
 
@@ -9,8 +9,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Run a one-line script
+    - name: Build and Test
       run: ./gradlew application:clean application:build
+    - name: Deploy
+      run: echo 'Placeholder for deploying to AWS CI environment'
 #     - name: Run a multi-line script
 #       run: |
 #         echo Add other actions to build,
