@@ -1,4 +1,4 @@
-name: Push branch
+name: CI
 
 on: [push]
 
@@ -13,7 +13,5 @@ jobs:
       run: ./gradlew application:clean application:build
     - name: Deploy
       run: echo 'Placeholder for deploying to AWS CI environment'
-#     - name: Run a multi-line script
-#       run: |
-#         echo Add other actions to build,
-#         echo test, and deploy your project.
+    - name: Acceptance Tests
+      run: echo 'Placeholder for running acceptance tests against Ci environment'
