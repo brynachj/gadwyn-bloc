@@ -1,8 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.bmuschko.gradle.docker.tasks.image.*
 
 plugins {
     id("org.springframework.boot") version "2.2.3.RELEASE"
     id("io.spring.dependency-management") version "1.0.8.RELEASE"
+	id("com.bmuschko.docker-remote-api") version "6.1.3"
     kotlin("jvm") version "1.3.61"
     kotlin("plugin.spring") version "1.3.61"
 }
@@ -15,6 +17,18 @@ repositories {
     mavenCentral()
 }
 
+docker {
+	url.set("https://192.168.59.103:2376")
+	certPath.set(File(System.getProperty("user.home"), ".boot2docker/certs/boot2docker-vm"))
+
+	registryCredentials {
+		url.set("https://index.docker.io/v1/")
+		username.set("brynachj")
+		password.set(System.getenv("DOCKER_PASSWORD"))
+		email.set("brynachj@gmail.com")
+	}
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -24,7 +38,6 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 }
-
 
 subprojects {
 	apply {
@@ -57,5 +70,13 @@ subprojects {
 			freeCompilerArgs = listOf("-Xjsr305=strict")
 			jvmTarget = "1.8"
 		}
+	}
+}
+
+fun getConfigurationProperty(envVar: String, sysProp: String): String {
+	return if (!System.getenv(envVar).isNullOrEmpty()) {
+		System.getenv(envVar)
+	} else {
+		project.findProperty(sysProp).toString()
 	}
 }
